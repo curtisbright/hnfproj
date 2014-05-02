@@ -1,0 +1,14 @@
+
+IML: Integer Matrix Library
+
+IML package provides efficient routines to solve nonsingular systems of 
+linear equations, certified solve any shape systems of linear equations, 
+and perform mod p matrix operations, such as computing row-echelon form, 
+determinant, rank profile, inverse of a mod p matrix.
+
+See INSTALL for the installation instructions.
+See doc/liblink for how to link your program with the library.
+See doc/libroutines for routine reference.
+See examples/readme for how to compile the examples
+
+

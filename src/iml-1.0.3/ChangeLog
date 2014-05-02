@@ -1,0 +1,72 @@
+2007-09-14 Storjohann & Pernet
+	* fix mem leaks and conditional jump issues (using M. Abshoff patches)
+	
+2006-11-23 Zhuliang Chen
+	* Upgrade to version 1.0.1
+	* nullspace.{c, h}, exam-nullspace.c: add new function into IML to 
+	  compute nullspaces
+	* certsolve.c, nonsingsolve.c, mtrans.c, basisop.c, test-largeentry.c,
+	  test-smallentry.c: fixed some bugs 
+	
+2004-11-04 Zhuliang Chen
+	* padiclift.c: make full use of gemv for right hand side a vector
+
+2004-09-20 Zhuliang Chen
+	* matrix.{c, h}: get rid of the dependency on these files
+
+2004-09-14 Zhuliang Chen
+	* certsolve.c: correct the verbose output
+        * Upgrade to version 0.1.0
+	
+2004-09-13 Zhuliang Chen
+	* padicLift.{c, h}: speed up the lifting
+	* certsolve.{c, h}: change specialminSolveLong and specialminSolveRNS
+	to delete the input parameter p
+
+2004-08-27 Zhuliang Chen
+	* certsolve.{c, h}: modified the code to compatible with old C version
+	
+2004-07-30 Zhuliang Chen
+	* iml: package adopts the BSD liscense
+
+2004-07-26 Zhuliang Chen
+	* iml: change the package name from linsysolve to iml
+
+2004-07-25 Zhuliang chen
+	* liblink, README, libroutines, INSTALL, readme: finish the documents
+
+	* mtrans.c: finish adding routines into mtrans.c
+
+2004-07-24 Zhuliang Chen
+	* mtrans.c: add some routines to mtrans.c
+	
+2004-07-22 Zhuliang Chen
+	* package: adjust the directory structure in the package
+	
+	* package: add macro --enable-verbose-mode to control whether to output
+	verbose information or not
+
+	* test-largeentry.c, test-smallentry.c: add new tests to test program
+
+	* mtrans.c: rename mTRANS to RowEchelonTransform
+
+
+	
+2004-07-21 Zhuliang Chen
+	* linsysolve.h: add new functions to this file
+
+2004-07-20 Zhuliang Chen
+	* INSTALL: add description of additional configured flags into INSTALL file
+	
+	* add comments to some of the source files
+	
+	* README: add some instructions
+
+2004-07-19 Zhuliang Chen 
+	* package: seems able to compile in Cygwin successfully
+	
+	* package: seems able to compile in pilatus using both gcc and icc successfully
+
+	* linsysolve.h: seems support C++
+
+	* add comments to some of the source files

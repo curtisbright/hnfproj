@@ -1,0 +1,45 @@
+Quick start instructions
+------------------------
+1.  Install GMP and ATLAS.
+2.  Build.
+      $> make all
+3.  Try an easy example.
+      $> ./bin/iherm_main -n 100 --verify --print_diag --type random
+4.  Try a harder example.
+      $> ./bin/iherm_main -n 100 --verify --print_diag --type steel
+
+The hnfproj package provides routines for efficiently computing the Hermite
+normal form of a square, nonsingular integer matrix.
+
+Additional notes
+----------------
+This package requires both GMP (http://gmplib.org/) and ATLAS
+(http://math-atlas.sourceforge.net/).  Non-standard installation directories
+require passing the following four variables to make.
+  ATLAS_INCLUDE_DIR=<...>
+  ATLAS_LIB_DIR=<...>
+  GMP_INCLUDE_DIR=<...>
+  GMP_LIB_DIR=<...>
+
+bin/      - example executables
+include/  - header for external callers
+lib/      - static and shared libraries
+
+src/      - main source tree
+examples/ - source for example applications
+tests/    - unit tests and utilities
+
+Build targets
+-------------
+     make all - Makes examples, lib, shared, and version targets
+make examples - Builds example executables:
+                  - bin/hor_main
+                  - bin/iherm_main
+                  - bin/simple_iherm
+                  - bin/unicert_main
+   make tests - Runs unit test suite.
+ make version - Builds version checking utility: bin/version
+
+     make lib - Builds static library: lib/liblift.a
+  make shared - Builds shared library: lib/liblift.so
+   make clean - Remove contents of objs/, lib/, and bin/ directories

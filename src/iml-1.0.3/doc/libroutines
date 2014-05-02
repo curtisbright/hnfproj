@@ -1,0 +1,983 @@
+
+This file explains the functions of the library routines. 
+
+Note:
+  Type FiniteField is defined as unsigned long
+  Type Double is defined as double
+
+
+extern long nullspaceLong(const long n, 
+			  const long m, 
+			  const long *A, 
+			  mpz_t * *mp_N_pass);
+
+/*
+ * Calling Sequence:
+ *   nullspaceLong(n, m, A, mp_N_pass)
+ *
+ * Summary:
+ *   Compute the right nullspace of A.
+ *
+ * Input:  n: long, row dimension of A
+ *         m: long, column dimension of A
+ *         A: 1-dim signed long array length n*m, representing n x m matrix
+ *            in row major order
+ *
+ * Output:
+ *   - *mp_N_pass: points to a 1-dim mpz_t array of length m*s, where s is the 
+ *                dimension of the right nullspace of A
+ *   - the dimension s of the nullspace is returned
+ *
+ * Notes:
+ *   - The matrix A is represented by one-dimension array in row major order.
+ *   - Space for what mp_N_points to is allocated by this procedure: if the
+ *     nullspace is empty, mp_N_pass is set to NULL.
+ */
+
+
+
+extern void nonsingSolvMM (const enum SOLU_POS solupos, const long n, 
+                           const long m, const long *A, mpz_t *mp_B, 
+			   mpz_t *mp_N, mpz_t mp_D);
+
+/*
+ * Calling Sequence:
+ *   nonsingSolvMM(solupos, n, m, A, mp_B, mp_N, mp_D)
+ *
+ * Summary:
+ *   Solve nonsingular system of linear equations, where the left hand side 
+ *   input matrix is a signed long matrix.
+ *
+ * Description:
+ *   Given a n x n nonsingular signed long matrix A, a n x m or m x n mpz_t 
+ *   matrix mp_B, this function will compute the solution of the system
+ *   1. AX = mp_B 
+ *   2. XA = mp_B. 
+ *   The parameter solupos controls whether the system is in the type of 1
+ *   or 2.
+ *   
+ *   Since the unique solution X is a rational matrix, the function will
+ *   output the numerator matrix mp_N and denominator mp_D respectively, 
+ *   such that A(mp_N) = mp_D*mp_B or (mp_N)A = mp_D*mp_B. 
+ *
+ * Input: 
+ *   solupos: enumerate, flag to indicate the system to be solved
+ *          - solupos = LeftSolu: solve XA = mp_B
+ *          - solupos = RightSolu: solve AX = mp_B
+ *         n: long, dimension of A
+ *         m: long, column or row dimension of mp_B depending on solupos
+ *         A: 1-dim signed long array length n*n, representing the n x n
+ *            left hand side input matrix
+ *      mp_B: 1-dim mpz_t array length n*m, representing the right hand side
+ *            matrix of the system
+ *          - solupos = LeftSolu: mp_B a m x n matrix
+ *          - solupos = RightSolu: mp_B a n x m matrix
+ * 
+ * Output:
+ *   mp_N: 1-dim mpz_t array length n*m, representing the numerator matrix 
+ *         of the solution
+ *       - solupos = LeftSolu: mp_N a m x n matrix
+ *       - solupos = RightSolu: mp_N a n x m matrix
+ *   mp_D: mpz_t, denominator of the solution
+ *
+ * Precondition: 
+ *   A must be a nonsingular matrix.
+ *
+ * Note:
+ *   - It is necessary to make sure the input parameters are correct,
+ *     expecially the dimension, since there is no parameter checks in the 
+ *     function.
+ *   - Input and output matrices are row majored and represented by
+ *     one-dimension array.
+ *   - It is needed to preallocate the memory space of mp_N and mp_D. 
+ *
+ */
+
+
+
+extern void nonsingSolvLlhsMM (const enum SOLU_POS solupos, const long n, 
+			       const long m, mpz_t *mp_A, mpz_t *mp_B, 
+			       mpz_t *mp_N, mpz_t mp_D);
+
+/*
+ * Calling Sequence:
+ *   nonsingSolvLlhsMM(solupos, n, m, mp_A, mp_B, mp_N, mp_D)
+ *
+ * Summary:
+ *   Solve nonsingular system of linear equations, where the left hand side 
+ *   input matrix is a mpz_t matrix.
+ *
+ * Description:
+ *   Given a n x n nonsingular mpz_t matrix A, a n x m or m x n mpz_t 
+ *   matrix mp_B, this function will compute the solution of the system
+ *   1. (mp_A)X = mp_B 
+ *   2. X(mp_A) = mp_B. 
+ *   The parameter solupos controls whether the system is in the type of 1
+ *   or 2.
+ *   
+ *   Since the unique solution X is a rational matrix, the function will
+ *   output the numerator matrix mp_N and denominator mp_D respectively, 
+ *   such that mp_Amp_N = mp_D*mp_B or mp_Nmp_A = mp_D*mp_B. 
+ *
+ * Input:
+ *   solupos: enumerate, flag to indicate the system to be solved
+ *          - solupos = LeftSolu: solve XA = mp_B
+ *          - solupos = RightSolu: solve AX = mp_B
+ *         n: long, dimension of A
+ *         m: long, column or row dimension of mp_B depending on solupos
+ *      mp_A: 1-dim mpz_t array length n*n, representing the n x n left hand
+ *            side input matrix
+ *      mp_B: 1-dim mpz_t array length n*m, representing the right hand side
+ *            matrix of the system
+ *          - solupos = LeftSolu: mp_B a m x n matrix
+ *          - solupos = RightSolu: mp_B a n x m matrix
+ * 
+ * Output:
+ *   mp_N: 1-dim mpz_t array length n*m, representing the numerator matrix 
+ *         of the solution
+ *       - solupos = LeftSolu: mp_N a m x n matrix
+ *       - solupos = RightSolu: mp_N a n x m matrix
+ *   mp_D: mpz_t, denominator of the solution
+ *
+ * Precondition: 
+ *   mp_A must be a nonsingular matrix.
+ *
+ * Note:
+ *   - It is necessary to make sure the input parameters are correct,
+ *     expecially the dimension, since there is no parameter checks in the 
+ *     function.
+ *   - Input and output matrices are row majored and represented by
+ *     one-dimension array.
+ *   - It is needed to preallocate the memory space of mp_N and mp_D. 
+ *
+ */
+
+
+
+extern void nonsingSolvRNSMM (const enum SOLU_POS solupos, const long n, 
+			      const long m, const long basislen, 
+			      const FiniteField *basis, Double **ARNS, 
+			      mpz_t *mp_B, mpz_t *mp_N, mpz_t mp_D);
+
+/*
+ * Calling Sequence:
+ *   nonsingSolvRNSMM(solupos, basislen, n, m, basis, ARNS, mp_B, mp_N, mp_D)
+ *
+ * Summary:
+ *   Solve nonsingular system of linear equations, where the left hand side 
+ *   input matrix is represented in a RNS.
+ *
+ * Description:
+ *   Given a n x n nonsingular matrix A represented in a RNS, a n x m or m x n
+ *   mpz_t matrix mp_B, this function will compute the solution of the system
+ *   1. AX = mp_B 
+ *   2. XA = mp_B. 
+ *   The parameter solupos controls whether the system is in the type of 1
+ *   or 2.
+ *   
+ *   Since the unique solution X is a rational matrix, the function will
+ *   output the numerator matrix mp_N and denominator mp_D respectively, 
+ *   such that A(mp_N) = mp_D*mp_B or (mp_N)A = mp_D*mp_B. 
+ *
+ * Input: 
+ *    solupos: enumerate, flag to indicate the system to be solved
+ *           - solupos = LeftSolu: solve XA = mp_B
+ *           - solupos = RightSolu: solve AX = mp_B
+ *   basislen: long, dimension of RNS basis
+ *          n: long, dimension of A
+ *          m: long, column or row dimension of mp_B depending on solupos
+ *      basis: 1-dim FiniteField array length basislen, RNS basis
+ *       ARNS: 2-dim Double array, dimension basislen x n*n, representation of
+ *             n x n input matrix A in RNS, where ARNS[i] = A mod basis[i]
+ *       mp_B: 1-dim mpz_t array length n*m, representing the right hand side
+ *             matrix of the system
+ *           - solupos = LeftSolu: mp_B a m x n matrix
+ *           - solupos = RightSolu: mp_B a n x m matrix
+ * 
+ * Output:
+ *   mp_N: 1-dim mpz_t array length n*m, representing the numerator matrix 
+ *         of the solution
+ *       - solupos = LeftSolu: mp_N a m x n matrix
+ *       - solupos = RightSolu: mp_N a n x m matrix
+ *   mp_D: mpz_t, denominator of the solution
+ *
+ * Precondition: 
+ *   - A must be a nonsingular matrix.
+ *   - Any element p in RNS basis must satisfy 2*(p-1)^2 <= 2^53-1.
+ *
+ * Note:
+ *   - It is necessary to make sure the input parameters are correct,
+ *     expecially the dimension, since there is no parameter checks in the 
+ *     function.
+ *   - Input and output matrices are row majored and represented by
+ *     one-dimension array.
+ *   - It is needed to preallocate the memory space of mp_N and mp_D. 
+ *
+ */
+
+
+
+extern long certSolveLong (const long certflag, const long n, const long m,
+			   const long *A, mpz_t *mp_b, mpz_t *mp_N,
+			   mpz_t mp_D, mpz_t *mp_NZ, mpz_t mp_DZ);
+
+/*
+ *
+ * Calling Sequence:
+ *   1/2/3 <-- certSolveLong(certflag, n, m, A, mp_b, mp_N, mp_D, 
+ *                           mp_NZ, mp_DZ)
+ * 
+ * Summary:
+ *   Certified solve a system of linear equations without reducing the 
+ *   solution size, where the left hand side input matrix is represented 
+ *   by signed long integers
+ * 
+ * Description:
+ *   Let the system of linear equations be Av = b, where A is a n x m matrix,
+ *   and b is a n x 1 vector. There are three possibilities:
+ *
+ *   1. The system has more than one rational solution
+ *   2. The system has a unique rational solution
+ *   3. The system has no solution
+ *
+ *   In the first case, there exist a solution vector v with minimal
+ *   denominator and a rational certificate vector z to certify that the 
+ *   denominator of solution v is really the minimal denominator.
+ *
+ *   The 1 x n certificate vector z satisfies that z.A is an integer vector 
+ *   and z.b has the same denominator as the solution vector v.
+ *   In this case, the function will output the solution with minimal 
+ *   denominator and optional certificate vector z (if certflag = 1). 
+ *
+ *   Note: if choose not to compute the certificate vector z, the solution 
+ *     will not garantee, but with high probability, to be the minimal 
+ *     denominator solution, and the function will run faster.
+ *
+ *   In the second case, the function will only compute the unique solution 
+ *   and the contents in the space for certificate vector make no sense.
+ *
+ *   In the third case, there exists a certificate vector q to certify that
+ *   the system has no solution. The 1 x n vector q satisfies q.A = 0 but 
+ *   q.b <> 0. In this case, the function will output this certificate vector
+ *   q and store it into the same space for certificate z. The value of 
+ *   certflag also controls whether to output q or not. 
+ *  
+ *   Note: if the function returns 3, then the system determinately does not 
+ *     exist solution, no matter whether to output certificate q or not.
+ * 
+ * Input:
+ *   certflag: 1/0, flag to indicate whether or not to compute the certificate 
+ *             vector z or q. 
+ *           - If certflag = 1, compute the certificate.
+ *           - If certflag = 0, not compute the certificate.
+ *          n: long, row dimension of the system
+ *          m: long, column dimension of the system
+ *          A: 1-dim signed long array length n*m, representation of n x m 
+ *             matrix A
+ *       mp_b: 1-dim mpz_t array length n, representation of n x 1 vector b
+ *  
+ * Return:
+ *   1: the first case, system has more than one solution
+ *   2: the second case, system has a unique solution
+ *   3: the third case, system has no solution
+ * 
+ * Output:
+ *   mp_N: 1-dim mpz_t array length m, 
+ *       - numerator vector of the solution with minimal denominator 
+ *         in the first case
+ *       - numerator vector of the unique solution in the second case
+ *       - make no sense in the third case
+ *   mp_D: mpz_t,
+ *       - minimal denominator of the solutions in the first case
+ *       - denominator of the unique solution in the second case
+ *       - make no sense in the third case
+ *
+ * The following will only be computed when certflag = 1
+ *   mp_NZ: 1-dim mpz_t array length n, 
+ *        - numerator vector of the certificate z in the first case
+ *        - make no sense in the second case
+ *        - numerator vector of the certificate q in the third case
+ *   mp_DZ: mpz_t, 
+ *        - denominator of the certificate z if in the first case
+ *        - make no sense in the second case
+ *        - denominator of the certificate q in the third case
+ *
+ * Note: 
+ *   - The space of (mp_N, mp_D) is needed to be preallocated, and entries in
+ *     mp_N and integer mp_D are needed to be initiated as any integer values.
+ *   - If certflag is specified to be 1, then also needs to preallocate space
+ *     for (mp_NZ, mp_DZ), and initiate integer mp_DZ and entries in mp_NZ to 
+ *     be any integer values. 
+ *     Otherwise, set mp_NZ = NULL, and mp_DZ = any integer
+ *
+ */
+
+
+
+extern long certSolveRedLong (const long certflag, const long nullcol, 
+			      const long n, const long m, const long *A,
+			      mpz_t *mp_b, mpz_t *mp_N, mpz_t mp_D,
+			      mpz_t *mp_NZ, mpz_t mp_DZ);
+
+/*
+ *
+ * Calling Sequence:
+ *   1/2/3 <-- certSolveRedLong(certflag, nullcol, n, m, A, mp_b, mp_N, mp_D, 
+ *                              mp_NZ, mp_DZ)
+ * 
+ * Summary:
+ *   Certified solve a system of linear equations and reduce the solution
+ *   size, where the left hand side input matrix is represented by signed 
+ *   long integers
+ * 
+ * Description:
+ *   Let the system of linear equations be Av = b, where A is a n x m matrix,
+ *   and b is a n x 1 vector. There are three possibilities:
+ *
+ *   1. The system has more than one rational solution
+ *   2. The system has a unique rational solution
+ *   3. The system has no solution
+ *
+ *   In the first case, there exist a solution vector v with minimal
+ *   denominator and a rational certificate vector z to certify that the 
+ *   denominator of solution v is really the minimal denominator.
+ *
+ *   The 1 x n certificate vector z satisfies that z.A is an integer vector 
+ *   and z.b has the same denominator as the solution vector v.
+ *   In this case, the function will output the solution with minimal 
+ *   denominator and optional certificate vector z (if certflag = 1). 
+ *
+ *   Note: if choose not to compute the certificate vector z, the solution 
+ *     will not garantee, but with high probability, to be the minimal 
+ *     denominator solution, and the function will run faster.
+ *
+ *   Lattice reduction will be used to reduce the solution size. Parameter 
+ *   nullcol designates the dimension of kernal basis we use to reduce the 
+ *   solution size as well as the dimension of nullspace we use to compute 
+ *   the minimal denominator. The heuristic results show that the solution 
+ *   size will be reduced by factor 1/nullcol. 
+ *
+ *   To find the minimum denominator as fast as possible, nullcol cannot be
+ *   too small. We use NULLSPACE_COLUMN as the minimal value of nullcol. That
+ *   is, if the input nullcol is less than NULLSPACE_COLUMN, NULLSPACE_COLUMN
+ *   will be used instead. However, if the input nullcol becomes larger, the
+ *   function will be slower. Meanwhile, it does not make sense to make 
+ *   nullcol greater than the dimension of nullspace of the input system. 
+ *
+ *   As a result, the parameter nullcol will not take effect unless 
+ *   NULLSPACE_COLUMN < nullcol < dimnullspace is satisfied, where 
+ *   dimnullspace is the dimension of nullspace of the input system.  If the
+ *   above condition is not satisfied, the boundary value NULLSPACE_COLUMN or  
+ *   dimnullspace will be used.
+ *
+ *   In the second case, the function will only compute the unique solution 
+ *   and the contents in the space for certificate vector make no sense.
+ *
+ *   In the third case, there exists a certificate vector q to certify that
+ *   the system has no solution. The 1 x n vector q satisfies q.A = 0 but 
+ *   q.b <> 0. In this case, the function will output this certificate vector
+ *   q and store it into the same space for certificate z. The value of 
+ *   certflag also controls whether to output q or not. 
+ *  
+ *   Note: if the function returns 3, then the system determinately does not 
+ *     exist solution, no matter whether to output certificate q or not.
+ * 
+ * Input:
+ *   certflag: 1/0, flag to indicate whether or not to compute the certificate 
+ *             vector z or q. 
+ *           - If certflag = 1, compute the certificate.
+ *           - If certflag = 0, not compute the certificate.
+ *    nullcol: long, dimension of nullspace and kernel basis of conditioned
+ *             system, 
+ *             if nullcol < NULLSPACE_COLUMN, use NULLSPACE_COLUMN instead
+ *          n: long, row dimension of the system
+ *          m: long, column dimension of the system
+ *          A: 1-dim signed long array length n*m, representation of n x m 
+ *             matrix A
+ *       mp_b: 1-dim mpz_t array length n, representation of n x 1 vector b
+ *  
+ * Return:
+ *   1: the first case, system has more than one solution
+ *   2: the second case, system has a unique solution
+ *   3: the third case, system has no solution
+ * 
+ * Output:
+ *   mp_N: 1-dim mpz_t array length m, 
+ *       - numerator vector of the solution with minimal denominator 
+ *         in the first case
+ *       - numerator vector of the unique solution in the second case
+ *       - make no sense in the third case
+ *   mp_D: mpz_t,
+ *       - minimal denominator of the solutions in the first case
+ *       - denominator of the unique solution in the second case
+ *       - make no sense in the third case
+ *
+ * The following will only be computed when certflag = 1
+ *   mp_NZ: 1-dim mpz_t array length n, 
+ *        - numerator vector of the certificate z in the first case
+ *        - make no sense in the second case
+ *        - numerator vector of the certificate q in the third case
+ *   mp_DZ: mpz_t, 
+ *        - denominator of the certificate z if in the first case
+ *        - make no sense in the second case
+ *        - denominator of the certificate q in the third case
+ *
+ * Note: 
+ *   - The space of (mp_N, mp_D) is needed to be preallocated, and entries in
+ *     mp_N and integer mp_D are needed to be initiated as any integer values.
+ *   - If certflag is specified to be 1, then also needs to preallocate space
+ *     for (mp_NZ, mp_DZ), and initiate integer mp_DZ and entries in mp_NZ to 
+ *     be any integer values. 
+ *     Otherwise, set mp_NZ = NULL, and mp_DZ = any integer
+ *
+ */
+
+
+
+extern long certSolveMP (const long certflag, const long n, const long m,
+			 mpz_t *mp_A, mpz_t *mp_b, mpz_t *mp_N, 
+			 mpz_t mp_D, mpz_t *mp_NZ, mpz_t mp_DZ);
+
+/*
+ *
+ * Calling Sequence:
+ *   1/2/3 <-- certSolveMP(certflag, n, m, mp_A, mp_b, mp_N, mp_D, 
+ *                         mp_NZ, mp_DZ)
+ * 
+ * Summary:
+ *   Certified solve a system of linear equations without reducing the 
+ *   solution size, where the left hand side input matrix is represented 
+ *   by mpz_t integers
+ * 
+ * Description:
+ *   Let the system of linear equations be Av = b, where A is a n x m matrix,
+ *   and b is a n x 1 vector. There are three possibilities:
+ *
+ *   1. The system has more than one rational solution
+ *   2. The system has a unique rational solution
+ *   3. The system has no solution
+ *
+ *   In the first case, there exist a solution vector v with minimal
+ *   denominator and a rational certificate vector z to certify that the 
+ *   denominator of solution v is really the minimal denominator.
+ *
+ *   The 1 x n certificate vector z satisfies that z.A is an integer vector 
+ *   and z.b has the same denominator as the solution vector v.
+ *   In this case, the function will output the solution with minimal 
+ *   denominator and optional certificate vector z (if certflag = 1). 
+ *
+ *   Note: if choose not to compute the certificate vector z, the solution 
+ *     will not garantee, but with high probability, to be the minimal 
+ *     denominator solution, and the function will run faster.
+ *
+ *   In the second case, the function will only compute the unique solution 
+ *   and the contents in the space for certificate vector make no sense.
+ *
+ *   In the third case, there exists a certificate vector q to certify that
+ *   the system has no solution. The 1 x n vector q satisfies q.A = 0 but 
+ *   q.b <> 0. In this case, the function will output this certificate vector
+ *   q and store it into the same space for certificate z. The value of 
+ *   certflag also controls whether to output q or not. 
+ *  
+ *   Note: if the function returns 3, then the system determinately does not 
+ *     exist solution, no matter whether to output certificate q or not.
+ *   In the first case, there exist a solution vector v with minimal
+ *   denominator and a rational certificate vector z to certify that the 
+ *   denominator of solution v is the minimal denominator.
+ * 
+ * Input:
+ *   certflag: 1/0, flag to indicate whether or not to compute the certificate 
+ *             vector z or q. 
+ *           - If certflag = 1, compute the certificate.
+ *           - If certflag = 0, not compute the certificate.
+ *          n: long, row dimension of the system
+ *          m: long, column dimension of the system
+ *       mp_A: 1-dim mpz_t array length n*m, representation of n x m matrix A
+ *       mp_b: 1-dim mpz_t array length n, representation of n x 1 vector b
+ *  
+ * Return:
+ *   1: the first case, system has more than one solution
+ *   2: the second case, system has a unique solution
+ *   3: the third case, system has no solution
+ * 
+ * Output:
+ *   mp_N: 1-dim mpz_t array length m, 
+ *       - numerator vector of the solution with minimal denominator 
+ *         in the first case
+ *       - numerator vector of the unique solution in the second case
+ *       - make no sense in the third case
+ *   mp_D: mpz_t,
+ *       - minimal denominator of the solutions in the first case
+ *       - denominator of the unique solution in the second case
+ *       - make no sense in the third case
+ *
+ * The following will only be computed when certflag = 1
+ *   mp_NZ: 1-dim mpz_t array length n, 
+ *        - numerator vector of the certificate z in the first case
+ *        - make no sense in the second case
+ *        - numerator vector of the certificate q in the third case
+ *   mp_DZ: mpz_t, 
+ *        - denominator of the certificate z if in the first case
+ *        - make no sense in the second case
+ *        - denominator of the certificate q in the third case
+ *
+ * Note: 
+ *   - The space of (mp_N, mp_D) is needed to be preallocated, and entries in
+ *     mp_N and integer mp_D are needed to be initiated as any integer values.
+ *   - If certflag is specified to be 1, then also needs to preallocate space
+ *     for (mp_NZ, mp_DZ), and initiate integer mp_DZ and entries in mp_NZ to 
+ *     be any integer values. 
+ *     Otherwise, set mp_NZ = NULL, and mp_DZ = any integer
+ *
+ */
+
+
+
+extern long certSolveRedMP (const long certflag, const long nullcol,
+			    const long n, const long m, mpz_t *mp_A,
+			    mpz_t *mp_b, mpz_t *mp_N, mpz_t mp_D,
+			    mpz_t *mp_NZ, mpz_t mp_DZ);
+
+/*
+ *
+ * Calling Sequence:
+ *   1/2/3 <-- certSolveRedMP(certflag, nullcol, n, m, mp_A, mp_b, mp_N, mp_D, 
+ *                            mp_NZ, mp_DZ)
+ * 
+ * Summary:
+ *   Certified solve a system of linear equations and reduce the solution
+ *   size, where the left hand side input matrix is represented by signed 
+ *   mpz_t integers
+ * 
+ * Description:
+ *   Let the system of linear equations be Av = b, where A is a n x m matrix,
+ *   and b is a n x 1 vector. There are three possibilities:
+ *
+ *   1. The system has more than one rational solution
+ *   2. The system has a unique rational solution
+ *   3. The system has no solution
+ *
+ *   In the first case, there exist a solution vector v with minimal
+ *   denominator and a rational certificate vector z to certify that the 
+ *   denominator of solution v is really the minimal denominator.
+ *
+ *   The 1 x n certificate vector z satisfies that z.A is an integer vector 
+ *   and z.b has the same denominator as the solution vector v.
+ *   In this case, the function will output the solution with minimal 
+ *   denominator and optional certificate vector z (if certflag = 1). 
+ *
+ *   Note: if choose not to compute the certificate vector z, the solution 
+ *     will not garantee, but with high probability, to be the minimal 
+ *     denominator solution, and the function will run faster.
+ *
+ *   Lattice reduction will be used to reduce the solution size. Parameter 
+ *   nullcol designates the dimension of kernal basis we use to reduce the 
+ *   solution size as well as the dimension of nullspace we use to compute 
+ *   the minimal denominator. The heuristic results show that the solution 
+ *   size will be reduced by factor 1/nullcol. 
+ *
+ *   To find the minimum denominator as fast as possible, nullcol cannot be
+ *   too small. We use NULLSPACE_COLUMN as the minimal value of nullcol. That
+ *   is, if the input nullcol is less than NULLSPACE_COLUMN, NULLSPACE_COLUMN
+ *   will be used instead. However, if the input nullcol becomes larger, the
+ *   function will be slower. Meanwhile, it does not make sense to make 
+ *   nullcol greater than the dimension of nullspace of the input system. 
+ *
+ *   As a result, the parameter nullcol will not take effect unless 
+ *   NULLSPACE_COLUMN < nullcol < dimnullspace is satisfied, where 
+ *   dimnullspace is the dimension of nullspace of the input system.  If the
+ *   above condition is not satisfied, the boundary value NULLSPACE_COLUMN or  
+ *   dimnullspace will be used.
+ *
+ *   In the second case, the function will only compute the unique solution 
+ *   and the contents in the space for certificate vector make no sense.
+ *
+ *   In the third case, there exists a certificate vector q to certify that
+ *   the system has no solution. The 1 x n vector q satisfies q.A = 0 but 
+ *   q.b <> 0. In this case, the function will output this certificate vector
+ *   q and store it into the same space for certificate z. The value of 
+ *   certflag also controls whether to output q or not. 
+ *  
+ *   Note: if the function returns 3, then the system determinately does not 
+ *     exist solution, no matter whether to output certificate q or not.
+ *   In the first case, there exist a solution vector v with minimal
+ *   denominator and a rational certificate vector z to certify that the 
+ *   denominator of solution v is the minimal denominator.
+ * 
+ * Input:
+ *   certflag: 1/0, flag to indicate whether or not to compute the certificate 
+ *             vector z or q. 
+ *           - If certflag = 1, compute the certificate.
+ *           - If certflag = 0, not compute the certificate.
+ *    nullcol: long, dimension of nullspace and kernel basis of conditioned
+ *             system, 
+ *             if nullcol < NULLSPACE_COLUMN, use NULLSPACE_COLUMN instead
+ *          n: long, row dimension of the system
+ *          m: long, column dimension of the system
+ *       mp_A: 1-dim mpz_t array length n*m, representation of n x m matrix A
+ *       mp_b: 1-dim mpz_t array length n, representation of n x 1 vector b
+ *  
+ * Return:
+ *   1: the first case, system has more than one solution
+ *   2: the second case, system has a unique solution
+ *   3: the third case, system has no solution
+ * 
+ * Output:
+ *   mp_N: 1-dim mpz_t array length m, 
+ *       - numerator vector of the solution with minimal denominator 
+ *         in the first case
+ *       - numerator vector of the unique solution in the second case
+ *       - make no sense in the third case
+ *   mp_D: mpz_t,
+ *       - minimal denominator of the solutions in the first case
+ *       - denominator of the unique solution in the second case
+ *       - make no sense in the third case
+ *
+ * The following will only be computed when certflag = 1
+ *   mp_NZ: 1-dim mpz_t array length n, 
+ *        - numerator vector of the certificate z in the first case
+ *        - make no sense in the second case
+ *        - numerator vector of the certificate q in the third case
+ *   mp_DZ: mpz_t, 
+ *        - denominator of the certificate z if in the first case
+ *        - make no sense in the second case
+ *        - denominator of the certificate q in the third case
+ *
+ * Note: 
+ *   - The space of (mp_N, mp_D) is needed to be preallocated, and entries in
+ *     mp_N and integer mp_D are needed to be initiated as any integer values.
+ *   - If certflag is specified to be 1, then also needs to preallocate space
+ *     for (mp_NZ, mp_DZ), and initiate integer mp_DZ and entries in mp_NZ to 
+ *     be any integer values. 
+ *     Otherwise, set mp_NZ = NULL, and mp_DZ = any integer
+ *
+ */
+
+
+
+extern void RowEchelonTransform (const FiniteField p, Double *A, const long n, 
+				 const long m, const long frows,
+				 const long lrows, const long redflag, 
+				 const long eterm, long *Q, long *rp,
+				 FiniteField *d);
+
+/*
+ * Calling Sequence:
+ *   RowEchelonTransform(p, A, n, m, frows, lrows, redflag, eterm, Q, rp, d)
+ *
+ * Summary:
+ *   Compute a mod p row-echelon transform of a mod p input matrix
+ *
+ * Description:
+ *   Given a n x m mod p matrix A, a row-echelon transform of A is a 4-tuple 
+ *   (U,P,rp,d) with rp the rank profile of A (the unique and strictly 
+ *   increasing list [j1,j2,...jr] of column indices of the row-echelon form 
+ *   which contain the pivots), P a permutation matrix such that all r leading
+ *   submatrices of (PA)[0..r-1,rp] are nonsingular, U a nonsingular matrix 
+ *   such that UPA is in row-echelon form, and d the determinant of 
+ *   (PA)[0..r-1,rp].
+ *
+ *   Generally, it is required that p be a prime, as inverses are needed, but
+ *   in some cases it is possible to obtain an echelon transform when p is 
+ *   composite. For the cases where the echelon transform cannot be obtained
+ *   for p composite, the function returns an error indicating that p is 
+ *   composite.
+ *
+ *   The matrix U is structured, and has last n-r columns equal to the last n-r
+ *   columns of the identity matrix, n the row dimension of A.
+ *
+ *   The first r rows of UPA comprise a basis in echelon form for the row 
+ *   space of A, while the last n-r rows of U comprise a basis for the left 
+ *   nullspace of PA.
+ *
+ *   For efficiency, this function does not output an echelon transform 
+ *   (U,P,rp,d) directly, but rather the expression sequence (Q,rp,d).
+ *   Q, rp, d are the form of arrays and pointers in order to operate inplace,
+ *   which require to preallocate spaces and initialize them. Initially, 
+ *   Q[i] = i (i=0..n), rp[i] = 0 (i=0..n), and *d = 1. Upon completion, rp[0]
+ *   stores the rank r, rp[1..r] stores the rank profile. i<=Q[i]<=n for 
+ *   i=1..r. The input Matrix A is modified inplace and used to store U. 
+ *   Let A' denote the state of A on completion. Then U is obtained from the
+ *   identity matrix by replacing the first r columns with those of A', and P
+ *   is obtained from the identity matrix by swapping row i with row Q[i], for
+ *   i=1..r in succession.
+ *
+ *   Parameters flrows, lrows, redflag, eterm control the specific operations
+ *   this function will perform. Let (U,P,rp,d) be as constructed above. If 
+ *   frows=0, the first r rows of U will not be correct. If lrows=0, the last
+ *   n-r rows of U will not be correct. The computation can be up to four 
+ *   times faster if these flags are set to 0.
+ *
+ *   If redflag=1, the row-echelon form is reduced, that is (UPA)[0..r-1,rp] 
+ *   will be the identity matrix. If redflag=0, the row-echelon form will not
+ *   be reduced, that is (UPA)[1..r,rp] will be upper triangular and U is unit
+ *   lower triangular. If frows=0 then redflag has no effect.
+ *
+ *   If eterm=1, then early termination is triggered if a column of the 
+ *   input matrix is discovered that is linearly dependant on the previous
+ *   columns. In case of early termination, the third return value d will be 0
+ *   and the remaining components of the echelon transform will not be correct.
+ *
+ * Input:
+ *         p: FiniteField, modulus
+ *         A: 1-dim Double array length n*m, representation of a n x m input
+ *            matrix
+ *         n: long, row dimension of A
+ *         m: long, column dimension of A
+ *     frows: 1/0, 
+ *          - if frows = 1, the first r rows of U will be correct
+ *          - if frows = 0, the first r rows of U will not be correct
+ *     lrows: 1/0,
+ *          - if lrows = 1, the last n-r rows of U will be correct
+ *          - if lrows = 0, the last n-r rows of U will not be correct
+ *   redflag: 1/0,
+ *          - if redflag = 1, compute row-echelon form
+ *          - if redflag = 0, not compute reow-echelon form
+ *     eterm: 1/0,
+ *          - if eterm = 1, terminate early if not in full rank
+ *          - if eterm = 0, not terminate early
+ *         Q: 1-dim long array length n+1, compact representation of 
+ *            permutation vector, initially Q[i] = i, 0 <= i <= n
+ *        rp: 1-dim long array length n+1, representation of rank profile, 
+ *            initially rp[i] = 0, 0 <= i <= n
+ *         d: pointer to FiniteField, storing determinant of the matrix, 
+ *            initially *d = 1
+ *
+ * Precondition:
+ *   ceil(n/2)*(p-1)^2+(p-1) <= 2^53-1 = 9007199254740991 (n >= 2)
+ *
+ */
+
+
+
+
+extern Double * mAdjoint (const FiniteField p, Double *A, const long n);
+
+/* 
+ * Calling Sequence:
+ *   Adj <-- mAdjoint(p, A, n)
+ *
+ * Summary:
+ *   Compute the adjoint of a mod p square matrix
+ *  
+ * Description:
+ *   Given a n x n mod p matrix A, the function computes adjoint of A. Input
+ *   A is not modified upon completion.
+ *
+ * Input:
+ *   p: FiniteField, prime modulus
+ *      if p is a composite number, the routine will still work if no error 
+ *      message is returned
+ *   A: 1-dim Double array length n*n, representation of a n x n mod p matrix.
+ *      The entries of A are casted from integers
+ *   n: long, dimension of A
+ *
+ * Return:
+ *   1-dim Double matrix length n*n, repesentation of a n x n mod p matrix,
+ *   adjoint of A
+ *
+ * Precondition:
+ *   n*(p-1)^2 <= 2^53-1 = 9007199254740991
+ *
+ */
+
+
+extern long mBasis (const FiniteField p, Double *A, const long n, 
+  		    const long m, const long basis, const long nullsp, 
+		    Double **B, Double **N);
+
+/* 
+ * Calling Sequence:
+ *   r/-1 <-- mBasis(p, A, n, m, basis, nullsp, B, N)
+ *
+ * Summary:
+ *   Compute a basis for the rowspace and/or a basis for the left nullspace 
+ *   of a mod p matrix
+ *  
+ * Description:
+ *   Given a n x m mod p matrix A, the function computes a basis for the
+ *   rowspace B and/or a basis for the left nullspace N of A. Row vectors in 
+ *   the r x m matrix B consist of basis of A, where r is the rank of A in
+ *   Z/pZ. If r is zero, then B will be NULL. Row vectors in the n-r x n
+ *   matrix N consist of the left nullspace of A. N will be NULL if A is full
+ *   rank.
+ *
+ *   The pointers are passed into argument lists to store the computed basis 
+ *   and nullspace. Upon completion, the rank r will be returned. The 
+ *   parameters basis and nullsp control whether to compute basis and/or
+ *   nullspace. If set basis and nullsp in the way that both basis and 
+ *   nullspace will not be computed, an error message will be printed and 
+ *   instead of rank r, -1 will be returned.
+ *  
+ * Input:
+ *        p: FiniteField, prime modulus
+ *           if p is a composite number, the routine will still work if no 
+ *           error message is returned
+ *        A: 1-dim Double array length n*m, representation of a n x m mod p 
+ *           matrix. The entries of A are casted from integers
+ *        n: long, row dimension of A
+ *        m: long, column dimension of A
+ *    basis: 1/0, flag to indicate whether to compute basis for rowspace or 
+ *           not
+ *         - basis = 1, compute the basis
+ *         - basis = 0, not compute the basis
+ *   nullsp: 1/0, flag to indicate whether to compute basis for left nullspace
+ *           or not
+ *         - nullsp = 1, compute the nullspace
+ *         - nullsp = 0, not compute the nullspace
+ *
+ * Output:
+ *   B: pointer to (Double *), if basis = 1, *B will be a 1-dim r*m Double
+ *      array, representing the r x m basis matrix. If basis = 1 and r = 0, 
+ *      *B = NULL
+ *  
+ *   N: pointer to (Double *), if nullsp = 1, *N will be a 1-dim (n-r)*n Double
+ *      array, representing the n-r x n nullspace matrix. If nullsp = 1 and
+ *      r = n, *N = NULL.
+ *
+ * Return:
+ *   - if basis and/or nullsp are set to be 1, then return the rank r of A 
+ *   - if both basis and nullsp are set to be 0, then return -1
+ *
+ * Precondition:
+ *   n*(p-1)^2 <= 2^53-1 = 9007199254740991
+ *
+ * Note:
+ *   - In case basis = 0, nullsp = 1, A will be destroyed inplace. Otherwise,
+ *     A will not be changed.
+ *   - Space of B and/or N will be allocated in the function
+ *
+ */
+
+
+
+extern long mDeterminant (const FiniteField p, Double *A, const long n);
+
+/*
+ * Calling Sequence:
+ *   det <-- mDeterminant(p, A, n)
+ * 
+ * Summary:
+ *   Compute the determinant of a square mod p matrix
+ *
+ * Input:
+ *   p: FiniteField, prime modulus
+ *      if p is a composite number, the routine will still work if no error 
+ *      message is returned
+ *   A: 1-dim Double array length n*n, representation of a n x n mod p matrix.
+ *      The entries of A are casted from integers
+ *   n: long, dimension of A
+ *
+ * Output:
+ *   det(A) mod p, the determinant of square matrix A
+ *
+ * Precondition:
+ *   ceil(n/2)*(p-1)^2+(p-1) <= 2^53-1 = 9007199254740991 (n >= 2)
+ *
+ * Note:
+ *   A is destroyed inplace
+ *
+ */
+
+
+extern long mInverse (const FiniteField p, Double *A, const long n);
+
+/*
+ * Calling Sequence:
+ *   1/0 <-- mInverse(p, A, n)
+ * 
+ * Summary:
+ *   Certified compute the inverse of a mod p matrix inplace
+ *
+ * Description:
+ *   Given a n x n mod p matrix A, the function computes A^(-1) mod p 
+ *   inplace in case A is a nonsingular matrix in Z/Zp. If the inverse does
+ *   not exist, the function returns 0.
+ *
+ *   A will be destroyed at the end in both cases. If the inverse exists, A is
+ *   inplaced by its inverse. Otherwise, the inplaced A is not the inverse.
+ *
+ * Input:
+ *   p: FiniteField, prime modulus
+ *      if p is a composite number, the routine will still work if no error 
+ *      message is returned
+ *   A: 1-dim Double array length n*n, representation of a n x n mod p matrix.
+ *      The entries of A are casted from integers
+ *   n: long, dimension of A
+ *
+ * Return: 
+ *   - 1, if A^(-1) mod p exists
+ *   - 0, if A^(-1) mod p does not exist
+ *
+ * Precondition:
+ *   ceil(n/2)*(p-1)^2+(p-1) <= 2^53-1 = 9007199254740991 (n >= 2)
+ *
+ * Note:
+ *   A is destroyed inplace
+ *
+ */
+
+
+
+extern long mRank (const FiniteField p, Double *A, const long n, const long m);
+
+/*
+ * Calling Sequence:
+ *   r <-- mRank(p, A, n, m)
+ *
+ * Summary:
+ *   Compute the rank of a mod p matrix
+ *
+ * Input:
+ *   p: FiniteField, prime modulus
+ *      if p is a composite number, the routine will still work if no 
+ *      error message is returned
+ *   A: 1-dim Double array length n*m, representation of a n x m mod p 
+ *      matrix. The entries of A are casted from integers
+ *   n: long, row dimension of A
+ *   m: long, column dimension of A
+ *   
+ * Return:
+ *   r: long, rank of matrix A
+ *
+ * Precondition:
+ *   ceil(n/2)*(p-1)^2+(p-1) <= 2^53-1 = 9007199254740991 (n >= 2)
+ *
+ * Note:
+ *   A is destroyed inplace
+ *
+ */
+
+
+
+extern long * mRankProfile (const FiniteField p, Double *A, 
+                            const long n, const long m);
+
+/*
+ * Calling Sequence:
+ *   rp <-- mRankProfile(p, A, n, m)
+ *
+ * Summary:
+ *   Compute the rank profile of a mod p matrix
+ *
+ * Input:
+ *   p: FiniteField, prime modulus
+ *      if p is a composite number, the routine will still work if no 
+ *      error message is returned
+ *   A: 1-dim Double array length n*m, representation of a n x m mod p 
+ *      matrix. The entries of A are casted from integers
+ *   n: long, row dimension of A
+ *   m: long, column dimension of A
+ *   
+ * Return:
+ *   rp: 1-dim long array length n+1, where
+ *     - rp[0] is the rank of matrix A
+ *     - rp[1..r] is the rank profile of matrix A
+ *
+ * Precondition:
+ *   ceil(n/2)*(p-1)^2+(p-1) <= 2^53-1 = 9007199254740991 (n >= 2)
+ *
+ * Note:
+ *   A is destroyed inplace
+ *
+ */

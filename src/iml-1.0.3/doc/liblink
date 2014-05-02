@@ -1,0 +1,83 @@
+
+
+This file provides instructions on how to compile and link your programs with
+the library. You could link C or C++ programs with the library.
+
+The package will install library libiml.a and header file iml.h in the target 
+machine. To link with the library, you need to locate the package directory 
+as well as GMP and ATLAS directories.
+
+Suppose 
+  compiler is CC,
+  this package header file is in directory <iml-include-dir>,
+  this package library is in directory <iml-lib-dir>,
+  GMP header file is in directory <gmp-include-dir>,
+  GMP library is in directory <gmp-lib-dir>,
+  ATLAS header file is in directory <atlas-include-dir>,
+  ATLAS library is in directory <atlas-lib-dir>.
+
+
+Header Include 
+==============
+
+In the source code of your program, you should include both "gmp.h" and 
+"iml.h" like this:
+
+#include "gmp.h"
+#include "iml.h"
+
+It is important to put "gmp.h" ahead of "iml.h" since iml.h uses symbols
+defined in GMP.
+
+
+Header Options
+==============
+
+If the header files are not installed in the default search path, which is 
+usually /usr or /usr/local, you should add one more of the following options
+
+-I<iml-include-dir>, -I<atlas-include-dir>, -I<gmp-include-dir>
+
+
+Linking
+=======
+
+Your program must have the following linking flags
+
+-liml -lcblas -latlas -lgmp 
+
+It is important to put flag -liml ahead of other three flags, and it is also
+important to put -lcblas ahead of -latlas.
+
+If the libraries are not installed in the default search path, you should add
+one or more of the following options
+
+-L<iml-lib-dir> -L<atlas-lib-dir> -L<gmp-lib-dir> 
+
+Overall, you could use the following way to compile and link your program with
+this library:
+
+CC [-I<iml-include-dir> -I<atlas-include-dir> -I<gmp-include-dir>]
+   yourprogram.c [-o yourprogram] 
+   [-L<iml-lib-dir> -L<atlas-lib-dir> -L<gmp-lib-dir>] 
+   -liml -lcblas -latlas -lgmp 
+
+
+icc compiler
+=============
+
+If you compile C programs using icc, you might need add another linker flag
+-no_cpprt. Otherwise, the linker might link with a run time C++ library and
+end up with an error message.
+
+
+Use the Library in C++
+======================
+
+If you want to call the library functions from C++ programs, you need to 
+include the package header file in the following way
+
+extern "C" 
+{
+  #include "iml.h"
+}
